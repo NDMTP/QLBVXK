@@ -12,11 +12,15 @@ if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 //tao chuoi luu cau lenh sql
-$sql = "SELECT khachhang.HOTEN, khachhang.EMAIL, chuyenxe.TENCHUYENXE, chuyenxe.THOIDIEMDITT, phieudatve.NGAYLAP, chuyenxe.GIA
+$sql = "SELECT chuyenxe.TENCHUYENXE, chuyenxe.THOIDIEMDITT, phieudatve.NGAYLAP, chuyenxe.GIA
 FROM vexe
 INNER JOIN phieudatve ON vexe.MAPHIEU = phieudatve.MAPHIEU
 INNER JOIN khachhang ON phieudatve.EMAIL = khachhang.EMAIL
 INNER JOIN chuyenxe ON vexe.ID_CHUYENXE = chuyenxe.ID_CHUYENXE
+WHERE khachhang.email='".$_SESSION["email"]."'
+
+
+
 ";
 //thuc thi cau lenh sql va dua doi tuong vao $result
 $result = $conn->query($sql);
@@ -35,9 +39,8 @@ if ($result->num_rows > 0) {
 
   // trinh bay du lieu trong 1 bang html
   //tieu de bang
-    echo "<table border=1><tr>
-    <th>Họ tên</th>
-    <th>Email</th>
+    echo "<table border=2>
+    <tr >
     <th>Tên chuyến xe</th>
     <th>Thời điểm đi thực tế</th>
     <th>Ngày lập</th>
@@ -51,10 +54,8 @@ if ($result->num_rows > 0) {
         <td>" . $row[1]. "</td>
         <td>" . $row[2]. "</td>
         <td>" . $row[3]. "</td>
-        <td>" . $row[4]. "</td>
-        <td>" . $row[5]. "</td>
 
-        
+
         </tr>";
 
     }

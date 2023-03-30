@@ -115,7 +115,7 @@ session_start();
                             <a href="index.php" class="nav-item nav-link active">Trang chủ</a>
                             <a href="lichtrinh.php" class="nav-item nav-link text-dark">Lịch Trình</a>
                             <a href="services.php" class="nav-item nav-link text-dark">Liên hệ</a>
-                            <a href="tracuuhoadon.php" class="nav-item nav-link text-dark">Hóa đơn</a>
+                            <a href="hoadon.php" class="nav-item nav-link text-dark">Hóa đơn</a>
 
                         </div>
 
@@ -124,8 +124,8 @@ session_start();
                 <!-- hien thi thong tin nguoi dung-->
 
                 <div class="container">
-                    <form action="danhsachhoadonchuyenxe.php" method="POST" class="formuser">
-                        <h2>Thông tin tài khoản</h2>
+                    <form action="updateuser.php" method="POST" class="formuser">
+                        <h2>Thông tin chi tiết hóa đơn</h2>
                         <div class="row">
                             <div class="col-6">
                                 <div class="mb-3">
@@ -134,19 +134,10 @@ session_start();
                                         value="<?php echo $_SESSION["name"] ?>" name="ten">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Tên chuyến xe </label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput3"
-                                        value="<?php echo $_SESSION["sdt"] ?>" name="tenchuyenxe">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Địa chỉ</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1"
-                                        value="<?php echo $_SESSION["nghenghiep"] ?>" name="nn">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Nghề Nghiệp</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput1"
-                                        value="<?php echo $_SESSION["diachi"] ?>" name="diachi">
+                                <div style="text-align: center;">
+                        <?php include('danhsachhoadonchuyenxe.php')
+                                ?>
+                        </div>
                                 </div>
 
                             </div>
@@ -159,63 +150,16 @@ session_start();
                                     </label>
 
                                 </div>
-                                
-                                
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Ngày sinh</label>
-                                    <input type="date" class="form-control" id="exampleFormControlInput4"
-                                        value="<?php echo $_SESSION["ngaysinh"]?>" name="ngaysinh">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Giới tính</label>
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="gioitinh"
-                                            id="flexRadioDefault1" value="nam">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Nam
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="gioitinh"
-                                            id="flexRadioDefault2" checked value="nu">
-                                        <label class="form-check-label" for="flexRadioDefault2">
-                                            Nữ
-                                        </label>
-                                    </div>
-
-                                </div>
 
 
                             </div>
                         </div>
+
                         <!----->
                         <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#exampleModal">
-                            Gửi
-                        </button>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Xác Nhận mật khẩu</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <input type="password" name="psw">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <input type="submit" name="sb" value="Gửi">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!----->
+
+
 
                     </form>
                 </div>

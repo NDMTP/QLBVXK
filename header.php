@@ -90,7 +90,7 @@ include("connect.php");
                             <a class="nav-link" href="services.php">Liên Hệ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="tracuuhoadon.php">Hóa Đơn</a>
+                            <a class="nav-link" href="hoadon.php">Hóa Đơn</a>
                         </li>
                         <?php
   if (isset($_SESSION['email'])) {
