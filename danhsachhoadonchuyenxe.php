@@ -49,16 +49,25 @@ if ($result->num_rows > 0) {
     // output data of each row
     foreach ($result_all as $row) {
 //dinh dang de hien thi ngay thang theo dd-mm-yyyy
-        echo "<tr>
-        <td>" . $row[0]. "</td>
-        <td>" . $row[1]. "</td>
-        <td>" . $row[2]. "</td>
-        <td>" . $row[3]. "</td>
-
+        echo "<tr class='col-12'>
+        <td class='col-4' >" . $row[0]. "</td>
+        <td class='col-4'>" . $row[1]. "</td>
+        <td class='col-3'>" . $row[2]. "</td>
+        <td class='col-1'>" . $row[3]. "</td>
+        </div>
 
         </tr>";
 
     }
+    $tongkh= "SELECT COUNT(CHUYENXE) AS TONGKH FROM nhanvien";
+    $result = mysqli_query($conn, $tongkh);
+    $tong1= $result->fetch_assoc();
+        echo"
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Tổng số nhân viên: ".$tong1["TONGKH"]."</th>
+                            ";
    echo "</table>";
   
 } else {
