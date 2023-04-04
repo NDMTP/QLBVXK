@@ -66,7 +66,7 @@ if ($result->num_rows > 0) {
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th>Tổng số nhân viên: ".$tong1["TONGKH"]."</th>
+                            <th>Tổng số chuyến xe: ".$tong1["TONGKH"]."</th>
                             ";
    echo "</table>";
   

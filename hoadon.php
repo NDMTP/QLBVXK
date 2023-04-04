@@ -28,6 +28,9 @@ include("header.php");
                           $result = mysqli_query($conn, $tongkh);
                           $tong1= $result->fetch_assoc(); 
                           $tongve= $tong1["TongTien"]
+                          
+
+
                           ?>
                 <div class="card-body pt-0 p-1 text-center">
 
@@ -38,7 +41,10 @@ include("header.php");
                   <h6 class="text-center mb-0 font-weight-bold">Tiền mặt</h6>  
           
                   <hr class="horizontal dark my-2">
-                  <h5 class="mb-0 " > <?php echo $tong1["TongTien"] ?>  Ngàn đồng</h5>
+                  <h5 class="mb-0 " > <?php 
+                  $number = $tong1["TongTien"];
+                  $formatted_number = number_format($number, 3);
+                  echo $formatted_number ?> đồng</h5>
                 </div>
               </div>
             </div>
@@ -157,7 +163,12 @@ include("header.php");
                                     <!-- phuong thuc thanh toan -->
                                     <td class="align-middle text-xs text-center">
 
-                                    <?php echo $row[3] ?>
+                                    <?php 
+
+                                    $number = $row[3];
+                                    $formatted_number = number_format($number, 3);
+                                    echo $formatted_number;
+                                    ?>
 
                                     </td>
 
@@ -189,7 +200,12 @@ include("header.php");
                                         </td>
 
                                         <td style="text-align: center;">
-                                        <?php echo $tongve ?>  
+                                        <?php 
+
+                                        $number = $tongve;
+                                        $formatted_number = number_format($number, 3);
+                                        echo $formatted_number;
+                                        ?>  
                                         </td>
                                       </div>
                                         
