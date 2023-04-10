@@ -6,13 +6,35 @@ include("header.php");
 ?>
 
 <body>
-    <div class="container border shadow mt-5 mb-5">
+
+    <?php
+    $diemdi = $_POST['diemdi'];
+    $diemden = $_POST['diemden'];
+    $ngaydi = $_POST['ngaydi'];
+    if (isset($_POST['ngayve'])) {
+        $ngayve = $_POST['ngayve'];
+    }
+    ?>
+
+    <div class="container border rounded shadow mt-5 mb-5">
         <!-- Cái khung, bo gốc -->
-        <div class="border1 m-5 shadow-lg p-5">
+        <div class=" mt-5 ml-5 mb-3 pl-5 " style="font-size: larger;">
+            <?php
+            if (isset($_POST['ngayve'])) {
+                echo '<input type="radio" name="loaidi" id="motchieu" onchange="document.getElementById(\'ngayve\').disabled = true;"> Một chiều';
+                echo '<input type="radio" name="loaidi" id="khuhoi" class="ml-5" checked onchange="document.getElementById(\'ngayve\').disabled = false;"> Khứ hồi';
+            } else {
+                echo '<input type="radio" name="loaidi" id="motchieu" checked onchange="document.getElementById(\'ngayve\').disabled = true;"> Một chiều';
+                echo '<input type="radio" name="loaidi" id="khuhoi" class="ml-5" onchange="document.getElementById(\'ngayve\').disabled = false;"> Khứ hồi';
+            }
+            ?>
+
+        </div>
+        <div class="border1 mb-5 ml-5 mr-5 shadow-lg p-5">
             <!-- Nhớ xóa border -->
             <div class="container">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="col m-1 p-3
                             text-muted text-center
                             font-weight-bold">
@@ -37,22 +59,26 @@ include("header.php");
                             $result = mysqli_query($conn, $sql);
 
                             // Đưa các điểm đến vào ô điểm đến trên trang web
-                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="diemdi">';
+                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="diemdi" onchange="getDivQuanDi()">';
                             echo '<option selected text-muted>Chọn địa điểm</option>';
                             if (mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    echo '<option value="' . $row["TENTINH"] . '" data-id="' . $row["MATINH"] . '">' . $row["TENTINH"] . ' (' . $row["MATINH"] . ')</option>';
+                                    if ($row["MATINH"] == $diemdi) {
+                                        echo '<option value="' . $row["MATINH"] . '"selected>' . $row["TENTINH"] . ' (' . $row["MATINH"] . ')</option>';
+                                    } else {
+                                        echo '<option value="' . $row["MATINH"] . '">' . $row["TENTINH"] . ' (' . $row["MATINH"] . ')</option>';
+                                    }
                                 }
                             }
                             echo '</select>';
 
-                            // Đóng kết nối
-                            mysqli_close($conn);
+                            // // Đóng kết nối
+                            // mysqli_close($conn);
                             ?>
 
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="col border-left
                                 m-1 p-3 text-center
                                 font-weight-bold
@@ -62,187 +88,351 @@ include("header.php");
                                     font-weight-bold
                                     text-muted">Điểm đến</h5>
                             <?php
-                            // Kết nối đến cơ sở dữ liệu
-                            $servername = "localhost";
-                            $username = "root";
-                            $password = "";
-                            $dbname = "qlbanvexe";
 
-                            $conn = new mysqli($servername, $username, $password, $dbname);
-                            if (!$conn) {
-                                die("Kết nối đến cơ sở dữ liệu không thành công: " . mysqli_connect_error());
-                            }
-
-                            // Truy vấn cơ sở dữ liệu để lấy các điểm đến
                             $sql = "SELECT * FROM tinhthanh";
                             $result = mysqli_query($conn, $sql);
 
                             // Đưa các điểm đến vào ô điểm đến trên trang web
-                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="diemden">';
+                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="diemden" onchange="getDivQuanDen()">';
                             echo '<option selected text-muted>Chọn địa điểm</option>';
                             if (mysqli_num_rows($result) > 0) {
                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    echo '<option value="' . $row["TENTINH"] . '" data-id="' . $row["MATINH"] . '">' . $row["TENTINH"] . ' (' . $row["MATINH"] . ')</option>';
+                                    if ($row["MATINH"] == $diemden) {
+                                        echo '<option value="' . $row["MATINH"] . '"selected>' . $row["TENTINH"] . ' (' . $row["MATINH"] . ')</option>';
+                                    } else {
+                                        echo '<option value="' . $row["MATINH"] . '">' . $row["TENTINH"] . ' (' . $row["MATINH"] . ')</option>';
+                                    }
                                 }
                             }
                             echo '</select>';
 
-                            // Đóng kết nối
-                            mysqli_close($conn);
                             ?>
 
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="col border-left text-center m-1 p-3">
                             <h5 class="card-title
                                     text-center
                                     font-weight-bold
                                     text-muted">Ngày đi</h5>
                             <?php
-                            include('date.php');
+                            // Lấy ngày hiện tại
+                            $currentDate = date("Y-m-d");
+
+                            // Lấy ngày đặt
+                            $bookDate = isset($_POST['book_date']) ? $_POST['book_date'] : '';
+
+                            // Kiểm tra nếu ngày hiện tại lớn hơn ngày đặt thì không cho đặt
+                            if ($bookDate != '' && $currentDate > $bookDate) {
+                                echo "Không thể đặt vé cho ngày đã qua.";
+                            } else {
+                                if ($ngaydi != "") {
+                                    echo "<input type='date' id='ngaydi' name='ngaydi' min='$currentDate' value = '" . $ngaydi . "' required>";
+                                } else {
+                                    echo "<input type='date' id='ngaydi' name='ngaydi' min='$currentDate' required>";
+                                }
+                            }
                             ?>
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="col border-left text-center m-1 p-3">
+                            <h5 class="card-title
+                                    text-center
+                                    font-weight-bold
+                                    text-muted">Ngày về</h5>
+                            <?php
+                            // Lấy ngày hiện tại
+                            $currentDate = date("Y-m-d");
 
+                            // Lấy ngày đặt
+                            $bookDate = isset($_POST['book_date']) ? $_POST['book_date'] : '';
+
+                            // Kiểm tra nếu ngày hiện tại lớn hơn ngày đặt thì không cho đặt
+                            if ($bookDate != '' && $currentDate > $bookDate) {
+                                echo "Không thể đặt vé cho ngày đã qua.";
+                            } else {
+                                if (isset($_POST['ngayve'])) {
+                                    echo "<input type='date' id='ngayve' name='ngayve' min='$currentDate' value = '" . $ngayve . "' required>";
+                                } else {
+                                    echo "<input type='date' id='ngayve' name='ngayve' min='$currentDate' disabled required>";
+                                }
+                            }
+                            ?>
+                        </div>
+                    </div>
                 </div>
                 <button class="snip1339 " style="float: right;" id="find-flight" onclick="getChuyenXe()">Tìm chuyến xe</button>
             </div>
-
         </div>
+        <div class="border1 m-5 shadow-lg p-5">
+            <h6 class="card-title text-muted">BỘ LỌC:</h6>
+            <div class="row">
+                <div class="col container shadow m-2 p-4" style="border-radius: 10px;">
+                    <div class="row">
+                        <div class="col" id="filterQuanDi">
+                            <h6 class="card-title
+                                    text-center
+                                    font-weight-bold
+                                    text-muted">Chọn quận huyện đi: </h6>
+                            <div id="ajaxquandi"></div>
+                            <?php
+                            $sql = "SELECT * FROM quanhuyen a, tinhthanh b WHERE a.MATINH = b.MATINH AND a.MATINH = '" . $diemdi . "'";
+                            $result = mysqli_query($conn, $sql);
+                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="quanhuyendi" name="quanhuyendi" onchange="getDivBenDi()">';
+                            echo '<option selected text-muted>Chọn</option>';
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="' . $row["MAQUANHUYEN"] . '">' . $row["TENQUANHUYEN"] . '</option>';
+                                }
+                            }
+                            echo '</select>';
+                            ?>
+                        </div>
+                        <div class="col">
+                            <h6 class="card-title
+                                    text-center
+                                    font-weight-bold
+                                    text-muted">Chọn bến đi: </h6>
+                            <div id="ajaxbendi"></div>
+                            <?php
+                            $sql = "SELECT * FROM benxe a, quanhuyen b, tinhthanh c WHERE a.MAQUANHUYEN = b.MAQUANHUYEN AND b.MATINH = c.MATINH AND b.MATINH = '" . $diemdi . "'";
+                            $result = mysqli_query($conn, $sql);
+                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="bendi" name="bendi">';
+                            echo '<option selected text-muted>Chọn</option>';
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="' . $row["MABX"] . '">' . $row["TENBEN"] . '</option>';
+                                }
+                            }
+                            echo '</select>';
+                            ?>
+                        </div>
 
-        <div>
-            <p>THÔNG TIN CHUNG</p>
-            <div id="diemdi-diemden"></div>
-            <div id="distance-time"></div>
+                    </div>
+                </div>
+                <div class="col container shadow m-2 p-4" style="border-radius: 10px;">
+                    <div class="row">
+                        <div class="col">
+                            <h6 class="card-title
+                                    text-center
+                                    font-weight-bold
+                                    text-muted">Chọn quận huyện đến: </h6>
+                            <div id="ajaxquanden"></div>
+                            <?php
+                            $sql = "SELECT * FROM quanhuyen a, tinhthanh b WHERE a.MATINH = b.MATINH AND a.MATINH = '" . $diemden . "'";
+                            $result = mysqli_query($conn, $sql);
+                            echo '<form method="post" action="">';
+                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="quanhuyenden" name="quanhuyenden" onchange="getDivBenDen()">';
+                            echo '<option selected text-muted>Chọn</option>';
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="' . $row["MAQUANHUYEN"] . '">' . $row["TENQUANHUYEN"] . '</option>';
+                                }
+                            }
+                            echo '</select>';
+                            echo '</form>';
+                            ?>
+                        </div>
+
+                        <div class="col">
+                            <h6 class="card-title
+                                    text-center
+                                    font-weight-bold
+                                    text-muted">Chọn bến đến: </h6>
+                            <div id="ajaxbenden"></div>
+                            <?php
+                            $sql = "SELECT * FROM benxe";
+                            $result = mysqli_query($conn, $sql);
+                            echo '<select class="form-select1 text-muted text-center" style="border: none" id="benden" name="benden">';
+                            echo '<option selected text-muted>Chọn</option>';
+                            if (mysqli_num_rows($result) > 0) {
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo '<option value="' . $row["MABX"] . '">' . $row["TENBEN"] . '</option>';
+                                }
+                            }
+                            echo '</select>';
+                            ?>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn btn-outline-secondary mt-2" style="float: right;" onclick="getNewChuyenXe()">Lọc chuyến xe</button>
+                </div>
+            </div>
+            <hr>
+
+            <div id="chuyenxe_ajax"></div>
+            <?php
+            $sql = "SELECT *, bxdi.TENBEN TENBENDI, bxden.TENBEN TENBENDEN FROM chuyenxe c, tuyenxe a, benxe bxdi, benxe bxden, quanhuyen qhdi, quanhuyen qhden , tinhthanh ttdi, tinhthanh ttden, xe x, loaixe lx
+                WHERE c.ID_TUYEN = a.ID_TUYEN
+                AND a.MABX = bxdi.MABX AND a.BEN_MABX = bxden.MABX 
+                AND bxdi.MAQUANHUYEN = qhdi.MAQUANHUYEN AND bxden.MAQUANHUYEN = qhden.MAQUANHUYEN
+                AND qhdi.MATINH = ttdi.MATINH AND qhden.MATINH = ttden.MATINH
+                AND c.BIENSO = x.BIENSO AND x.ID_LOAI = lx.ID_LOAI
+                AND ttdi.MATINH = 'CT65' AND ttden.MATINH = 'CM04'";
+            $result = mysqli_query($conn, $sql);
+            if (mysqli_num_rows($result) > 0) {
+                echo '<h6 class="card-title text-muted">KẾT QUẢ:</h6>';
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo '<div class="mt-4" id="chuyenxe_item">';
+                    echo '';
+                    echo '<!-- Chuyến xe -->';
+                    echo '<div class="container border shadow p-4" style="border-radius: 10px;">';
+                    echo '<div class="row">';
+                    echo '<div class="col">';
+                    echo '<h3 style="color: #454545">';
+                    echo substr($row["TGDUKIENKHOIHANH"], 11, 8) . ' <i class="fa fa-long-arrow-right" aria-hidden="true"></i>' . substr($row["TGDUKIENDEN"], 11, 8);
+                    echo '</h3>';
+                    echo '</div>';
+                    echo '<div class="col">';
+                    echo '<h5 style="float: right;">';
+                    echo '<i class="fa fa-calendar m-1" aria-hidden="true" style="color:darkgreen"></i>';
+                    echo '<i class="fa fa-bolt m-1" aria-hidden="true" style="color:darkgreen"></i>';
+                    echo '<i class="fa fa-rss m-1" aria-hidden="true" style="color:darkgreen"></i>';
+                    echo '</h5>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '<div class="row">';
+                    echo '<div class="col-md-4 border m-2 " style="border-radius: 30px; background-color:#E9E9E9">';
+                    echo number_format($row["GIAHIENHANH"] . "000", 0, ',', '.') . " đ" . ' ● ' . $row["TENLOAI"] . ' ● Còn ' . $row["SOGHE"] . ' chỗ';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '<div class="row">';
+                    echo '<div class="col-md-11">';
+                    echo '<div class="row">';
+                    echo '<h6 class="col" style="font-size: large;"><i class="fa fa-circle mr-3" aria-hidden="true" style="color:darkgreen"></i> ' . $row["TENBENDI"] . '</h6>';
+                    echo '</div>';
+                    echo '<div class="row">';
+                    echo '<div class="border-left ml-4 p-1">';
+                    echo '<div class="m-3 p-2 alert alert-success">';
+                    echo 'Thời gian di chuyển trung bình: ' . floor($row["TGDICHUYENTB"]) . " giờ " . round(($row["TGDICHUYENTB"] - floor($row["TGDICHUYENTB"])) * 60) . " phút";
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '<div class="row">';
+                    echo '<h6 class="col" style="font-size: large;"><i class="fa fa-map-marker mr-3" aria-hidden="true" style="color:darkgreen"></i> ' . $row["TENBENDEN"] . '</h6>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '<div class="col-md-1">';
+                    echo '<br><br><br>';
+                    echo '<div class="row">';
+                    echo '<div style="text-align: center;">';
+                    echo '<input style="width: 20px; height: 20px;" type="radio">';
+                    echo '<h5 style="color: darkgreen;">Chọn</h5>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+                echo '</div>';
+            }
+            ?>
         </div>
-
-        <div id="show_chuyenxe"></div>
-        <div id="show_vitrighe"></div>
     </div>
 
-
     <script>
-        // Lấy đối tượng
-        var select_di = document.getElementById("diemdi");
-        var select_den = document.getElementById("diemden");
+        function getDivBenDi() {
+            var maquanhuyen = document.getElementById("quanhuyendi").value;
+            var matinhdi = document.getElementById("diemdi").value;
+            var xmlhttp = new XMLHttpRequest();
 
-        // Thêm sự kiện "change" cho select_den
-        var count = 0;
-        select_di.addEventListener("change", checkSelected);
-        select_den.addEventListener("change", checkSelected);
-
-        //Kiểm tra (Nếu đủ 2 thì in ra)
-        function checkSelected() {
-            if (select_di.value != "" && select_den.value != "") {
-                count++;
-                if (count == 2) {
-                    count--;
-                    printResult();
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // xử lý phản hồi từ server
+                    document.getElementById("ajaxbendi").innerHTML = this.responseText;
                 }
-            }
+            };
+
+            xmlhttp.open("GET", "datve_function.php?function=ajaxbendi&matinh=" + matinhdi + "&maquanhuyen=" + maquanhuyen, true);
+            xmlhttp.send();
+            document.getElementById("bendi").remove();
 
         }
 
-        // Hàm in kết quả
-        function printResult() {
+        function getDivBenDen() {
+            var maquanhuyen = document.getElementById("quanhuyenden").value;
+            var matinhden = document.getElementById("diemden").value;
+            var xmlhttp = new XMLHttpRequest();
 
-            // var valueA_code = select_di.options[select_di.selectedIndex];
-            // var valueA = valueA_code.dataset.id;
-            var valueA = select_di.value;
-            var valueB = select_den.value;
-            var result = valueA + "->" + valueB;
-            document.getElementById("diemdi-diemden").innerHTML = result;
+            xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // xử lý phản hồi từ server
+                    document.getElementById("ajaxbenden").innerHTML = this.responseText;
+                }
+            };
+
+            xmlhttp.open("GET", "datve_function.php?function=ajaxbenden&matinh=" + matinhden + "&maquanhuyen=" + maquanhuyen, true);
+            xmlhttp.send();
+            document.getElementById("benden").remove();
+        }
+
+        function makeNull(x) {
+            if (x == "Chọn")
+                x = "";
+            return x;
+        }
+
+        function getNewChuyenXe() {
+            var maquanhuyendi = makeNull(document.getElementById("quanhuyendi").value);
+            var mabendi = makeNull(document.getElementById("bendi").value);
+            var maquanhuyenden = makeNull(document.getElementById("quanhuyenden").value);
+            var mabenden = makeNull(document.getElementById("benden").value);
+            var matinhdi = makeNull(document.getElementById("diemdi").value);
+            var matinhden = makeNull(document.getElementById("diemden").value);
 
             var xmlhttp = new XMLHttpRequest();
 
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     // xử lý phản hồi từ server
-                    document.getElementById("distance-time").innerHTML = this.responseText;
+                    document.getElementById("chuyenxe_ajax").innerHTML = this.responseText;
                 }
             };
 
-            var option_di = select_di.options[select_di.selectedIndex];
-            var start = option_di.dataset.id;
-            var option_den = select_den.options[select_den.selectedIndex];
-            var end = option_den.dataset.id;
-
-            // gửi yêu cầu tới server
-            xmlhttp.open("GET", "datve_function.php?function=get_distance&start=" + start + "&end=" + end, true);
+            xmlhttp.open("GET", "datve_function.php?function=ajaxchuyenxe&maquanhuyendi=" + maquanhuyendi + "&maquanhuyenden=" + maquanhuyenden + "&mabendi=" + mabendi + "&mabenden=" + mabenden + "&matinhdi=" + matinhdi + "&matinhden=" + matinhden, true);
             xmlhttp.send();
+
+            document.getElementById("chuyenxe_item").remove();
         }
 
-        function printResult() {
-            var valueA = select_di.value;
-            var valueB = select_den.value;
-            var result = valueA + "->" + valueB;
-            document.getElementById("diemdi-diemden").innerHTML = result;
-
-            var xmlhttp = new XMLHttpRequest();
-
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    // xử lý phản hồi từ server
-                    document.getElementById("distance-time").innerHTML = this.responseText;
-                }
-            };
-
-            var option_di = select_di.options[select_di.selectedIndex];
-            var start = option_di.dataset.id;
-            var option_den = select_den.options[select_den.selectedIndex];
-            var end = option_den.dataset.id;
-
-            // gửi yêu cầu tới server
-            xmlhttp.open("GET", "datve_function.php?function=get_distance&start=" + start + "&end=" + end, true);
-            xmlhttp.send();
-        }
-
-        //Hàm tìm chuyến xe
-        function getChuyenXe() {
-            document.getElementById("show_chuyenxe").style.display = "block";
-            document.getElementById("show_vitrighe").style.display = "none";
-            var valueA = select_di.value;
-            var valueB = select_den.value;
+        function getDivQuanDi() {
+            var matinhdi = document.getElementById("diemdi").value;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     // xử lý phản hồi từ server
-                    document.getElementById("show_chuyenxe").innerHTML = this.responseText;
+                    document.getElementById("ajaxquandi").innerHTML = this.responseText;
                 }
             };
-
-            var option_di = select_di.options[select_di.selectedIndex];
-            var start = option_di.dataset.id;
-            var option_den = select_den.options[select_den.selectedIndex];
-            var end = option_den.dataset.id;
-
-            // gửi yêu cầu tới server
-            xmlhttp.open("GET", "datve_function.php?function=get_chuyenxe&start=" + start + "&end=" + end, true);
+            xmlhttp.open("GET", "datve_function.php?function=ajaxquandi&matinh=" + matinhdi, true);
             xmlhttp.send();
+            document.getElementById("quanhuyendi").remove();
         }
 
-        function getViTriGhe() {
-            document.getElementById("show_chuyenxe").style.display = "none";
-            document.getElementById("show_vitrighe").style.display = "block";
+        function getDivQuanDen() {
+            var matinhdi = document.getElementById("diemden").value;
             var xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     // xử lý phản hồi từ server
-                    document.getElementById("show_vitrighe").innerHTML = this.responseText;
+                    document.getElementById("ajaxquanden").innerHTML = this.responseText;
                 }
             };
-            // gửi yêu cầu tới server
-            xmlhttp.open("GET", "datve_function.php?function=get_vitrighe", true);
+            xmlhttp.open("GET", "datve_function.php?function=ajaxquanden&matinh=" + matinhdi, true);
             xmlhttp.send();
+            document.getElementById("quanhuyenden").remove();
         }
-        
-
     </script>
 
-
 </body>
-
+<!-- document.getElementById("show_chuyenxe").style.display = "none";
+            document.getElementById("show_vitrighe").style.display = "block"; -->
 <footer>
     <div class="container">
         <div class="row">
