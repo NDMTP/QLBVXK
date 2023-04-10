@@ -1,181 +1,307 @@
-<?php
-include("connect.php");
-session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="TemplateMo">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ thống Xe ABC</title>
-
-
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/htqlxe.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-
+    <?php
+include("header.php");
+?>
 
 </head>
-
 <body>
-    <!-- Topbar Start -->
-    <div class="container-fluid">
-        <div class="sub-header">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-8 col-xs-12">
-                        <ul class="left-info">
-                            <li><a href="mailto:abc@gmail.com"><i class="fa-solid fa-envelope"></i>abc@gmail.com </a>
-                            </li>
-                            <li><a href="tel:090-080-0760"><i class="fa fa-phone"></i>090-080-0760</a></li>
+<div class="container-fluid py-4">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-4">
+              <div class="card">
 
-                        </ul>
-                    </div>
-                    <div class="col-md-4">
-                        <ul class="right-icons">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                            <li><a href="#"><i class="fa fa-behance"></i></a></li>
-                        </ul>
-                    </div>
+              <?php     $tongkh= "SELECT SUM(chuyenxe.GIA) AS TongTien
+                          FROM vexe
+                          INNER JOIN phieudatve ON vexe.MAPHIEU = phieudatve.MAPHIEU
+                          INNER JOIN khachhang ON phieudatve.EMAIL = khachhang.EMAIL
+                          INNER JOIN chuyenxe ON vexe.ID_CHUYENXE = chuyenxe.ID_CHUYENXE
+                          WHERE khachhang.email='".$_SESSION["email"]."'
+                          ";
+                          $result = mysqli_query($conn, $tongkh);
+                          $tong1= $result->fetch_assoc(); 
+                          $tongve= $tong1["TongTien"]
+                          
+
+
+                          ?>
+                <div class="card-body pt-0 p-1 text-center">
+
+
+
+
+                <img src="https://img.icons8.com/doodle/100/null/money.png"/>      
+                  <h6 class="text-center mb-0 font-weight-bold">Tiền mặt</h6>  
+          
+                  <hr class="horizontal dark my-2">
+                  <h5 class="mb-0 " > <?php 
+                  $number = $tong1["TongTien"];
+                  $formatted_number = number_format($number, 3);
+                  echo $formatted_number ?> đồng</h5>
                 </div>
+              </div>
             </div>
+            <div class="col-4">
+              <div class="card">
 
-        </div>
-        <div class="row align-items-center py-3 px-xl-5">
-            <div class="col-lg-6 d-none d-lg-block">
-                <a href="" class="text-decoration-none">
-                    <h4 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold  mr-1"><i
-                                class="fas fa-user-circle"></i>
-                    </h4>
-                    </span> <?php echo $_SESSION["name"] ?>
-                </a>
+                <div class="card-body pt-0 p-1 text-center">
+
+
+
+                <img src="https://img.icons8.com/bubbles/100/null/bank-building.png"/>
+                  <h6 class="text-center mb-0 font-weight-bold" >Chuyển khoản ngân hàng</h6>                  
+                  <hr class="horizontal dark my-2">
+                  <h5 class="mb-0"> Đang bảo trì  </h5>
+
+                </div>
+              </div>
             </div>
-            <div class="col-lg-6 col-6 text-right">
+            <div class="col-4">
+              <div class="card">
 
-                <a href="dangxuat.php" class=" text-dark">
-                    Đăng xuất
-                </a>
+                <div class="card-body pt-0 p-1 text-center">
+
+
+
+                <img src="https://img.icons8.com/clouds/100/null/visa.png"/>
+                  <h6 class="text-center mb-0 font-weight-bold">Visa/Mastercard</h6>                  
+                  <hr class="horizontal dark my-2">
+                  <h5 class="mb-0"> Đang bảo trì</h5>
+                </div>
+              </div>
             </div>
-        </div>
-    </div>
-    <!-- Topbar End -->
-
-
-    <!-- Navbar Start -->
-    <div class="container-fluid mb-5">
-        <div class="row border-top px-xl-5">
-            <div class="col-lg-3 d-none d-lg-block">
-                <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
-                    data-toggle="collapse" href="#navbar-vertical"
-                    style="height: 65px; margin-top: -1px; padding: 0 30px;">
-                    <h6 class="m-0">Tài Khoản Của Tôi</h6>
-                    <i class="fa fa-angle-down text-dark"></i>
-                </a>
-                <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0"
-                    id="navbar-vertical">
-                    <div class="navbar-nav w-100 overflow-hidden" style="height: 310px">
-                        <div class="nav-item dropdown">
-                            <a href="#" class="text-dark" data-toggle="dropdown">Hồ sơ <i
-                                    class="fa fa-angle-down float-right mt-1"></i></a>
-                            <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href="" class="dropdown-item text-dark">Địa Chỉ</a>
-                                <a href="" class="dropdown-item text-dark">Số điện Thoại</a>
-                                <a href="" class="dropdown-item text-dark">Đổi Mật Khẩu</a>
-                            </div>
-                        </div>
-                        <a href="" class="nav-item text-dark">Đơn Mua</a>
-                        <a href="" class="nav-item text-dark">Thông Báo</a>
-                        <a href="" class="nav-item text-dark">Giỏ Hàng</a>
+          </div>
+          <div class="row mt-4 ">
+            <div class="col-lg-12">
+              <div class="card h-100">
+                <div class="card-header pb-0 p-3">
+                  <div class="row" >
+                    <div class="col-6 d-flex align-items-center " >
+                      <h5 class="mb-0 font-weight-bold" style="color: #EE6D4A;">Danh sách hoá đơn</h5>
                     </div>
-                </nav>
-            </div>
-            <div class="col-lg-9">
-                <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+                    <div class="col-6 text-end">
 
-                    <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
-                        <div class="navbar-nav mr-auto py-0">
-                            <a href="index.php" class="nav-item nav-link active">Trang chủ</a>
-                            <a href="lichtrinh.php" class="nav-item nav-link text-dark">Lịch Trình</a>
-                            <a href="services.php" class="nav-item nav-link text-dark">Liên hệ</a>
-                            <a href="hoadon.php" class="nav-item nav-link text-dark">Hóa đơn</a>
 
-                        </div>
+
 
                     </div>
-                </nav>
-                <!-- hien thi thong tin nguoi dung-->
+                  </div>
+                </div>
+                <div class="card-body p-3 pb-0">
+                  <div class="table-responsive p-0">
+                        <!-- table 5 cot -->
+                        <table id="myTable" class="display" class="table align-items-center mb-0">
+                          <thead>
+                            <tr class="col-12">
+                              <th class="col-4 text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tên chuyến xe</th>
+                              <th class="col-4 text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Thời điểm đi thực tế</th>
+                              <th class="col-3 text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Ngày lập hóa đơn</th>
+                              <th class="col-1 text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Giá</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <!-- 1 hang -->
+ 
+                                <?php 
+                                    //tao chuoi luu cau lenh sql
+                                    $sql = "SELECT chuyenxe.TENCHUYENXE, chuyenxe.THOIDIEMDITT, phieudatve.NGAYLAP, chuyenxe.GIA
+                                    FROM vexe
+                                    INNER JOIN phieudatve ON vexe.MAPHIEU = phieudatve.MAPHIEU
+                                    INNER JOIN khachhang ON phieudatve.EMAIL = khachhang.EMAIL
+                                    INNER JOIN chuyenxe ON vexe.ID_CHUYENXE = chuyenxe.ID_CHUYENXE
+                                    WHERE khachhang.email='".$_SESSION["email"]."'
+                                    
+                                    
+                                    
+                                    ";
+                                    //thuc thi cau lenh sql va dua doi tuong vao $result
+                                    $result = $conn->query($sql);
+                                    
+                                    
+                                    if ($result->num_rows > 0) {
+                                      
+                                      
+                                    
+                                    
+                                      
+                                       //Cach 3: trinh bay voi bang html
+                                      //load du lieu moi len dua vao bien result
+                                      $result = $conn->query($sql);
+                                      $result_all = $result -> fetch_all();
 
-                <div class="container">
-                    <form action="updateuser.php" method="POST" class="formuser">
-                        <h2>Thông tin chi tiết hóa đơn</h2>
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Tên</label>
-                                    <input type="text" class="form-control" id="exampleFormControlInput2"
-                                        value="<?php echo $_SESSION["name"] ?>" name="ten">
-                                </div>
-                                <div class="mb-3">
-                                <div style="text-align: center;">
-                        <?php include('danhsachhoadonchuyenxe.php')
+                                      foreach ($result_all as $row) {
+                                        ?>
+                                         <tr>
+                                    <td class="align-middle text-center" >
+                                      <!-- ma hd -->
+
+
+                                            <?php echo $row[0] ?>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                      <!-- ngayhoanthanh -->
+
+                                      <?php echo $row[1] ?>
+
+
+                                    </td>
+                                    <td class="align-middle text-center">
+                                      <!-- soluong -->
+      
+                                      <?php echo $row[2] ?>
+
+
+                                    </td>
+
+                                    <!-- phuong thuc thanh toan -->
+                                    <td class="align-middle text-xs text-center">
+
+                                    <?php 
+
+                                    $number = $row[3];
+                                    $formatted_number = number_format($number, 3);
+                                    echo $formatted_number;
+                                    ?>
+
+                                    </td>
+
+                                    <td class="align-middle text-success text-center">
+                                      <!-- tongtien -->
+
+
+
+                                    </td>
+                                  </tr>
+                                        <?php
+                                      }
+
+                                    }
+                                    $tongkh= "SELECT COUNT(ID_CHUYENXE) AS TONGVE FROM chuyenxe";
+                                    $result = mysqli_query($conn, $tongkh);
+                                    $tong1= $result->fetch_assoc();
                                 ?>
-                        </div>
-                                </div>
 
-                            </div>
+                                      <tr>
+                                        <td>
+                                        </td>
 
-                            <div class="col-6">
-                                <div class="mb-3">
-                                    <label for="exampleFormControlInput1" class="form-label">Email
-                                        <br>
-                                        <?php echo $_SESSION["email"]?>
-                                    </label>
+                                        <td>
+                                        </td>
+                                        <div style="margin-top: 10px;">
+                                        <td style="text-align: right" >
+                                        <b> Tổng tiền <b>  
+                                        </td>
 
-                                </div>
+                                        <td style="text-align: center;">
+                                        <?php 
 
-
-                            </div>
-                        </div>
-
-                        <!----->
-                        <!-- Button trigger modal -->
-
-
-
-
-                    </form>
+                                        $number = $tongve;
+                                        $formatted_number = number_format($number, 3);
+                                        echo $formatted_number;
+                                        ?>  
+                                        </td>
+                                      </div>
+                                        
+                                      </tr>
+                                 
+                                
+                                
+                              
+                            
+                            
+                            <!-- het 1 hang -->
+                          </tbody>
+                        </table>
+                      </div>
                 </div>
-
-                <!-- ket thuc hien thi thong tin nguoi dung-->
-
+              </div>  
             </div>
+          </div>
         </div>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <div class="row">
+                <div class="col-7 d-flex align-items-center">
+                  <h5 class="mb-0 font-weight-bold " style="color: #EE6D4A" >Chi tiết hoá đơn</h5>
+                </div>
+                <div class="col-2 text-center me-n3">
+                  <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-print text-sm me-1"></i> In</button>
+                </div>
+                <div class="col-3 text-center">
+                  <button class="btn btn-link text-dark text-sm mb-0 px-0 ms-1"><i class="fas fa-file-pdf text-sm me-1"></i> Xuất PDF</button>
+                </div>
+              </div>
+            </div>
+            <div class="card-body p-3 pb-0">
+              <div class="row">
+                <div class="col-12">
+                  <!-- title -->
+                  <div class="row text-center fs-4 font-weight-bold">
+                    <div class="col-12">
+                      <h4 class="font-weight-bold"> HÓA ĐƠN </h4>
+                    </div>
+                  </div>
+                  <!-- ngay -->
+
+                  <!-- thongtin khachhang -->
+                  <div class="row mt-3">
+                    <div class="col-md-12">
+                      <h6>Thông tin khách hàng:</h6>
+                      <!-- 1 hang -->
+                      <div class="row px-2 mt-2">
+                        <div class="col-4">
+                          <h6>Tên khách hàng: </h6>
+                        </div>
+                        <div class="col-8">
+                        <?php echo $_SESSION["name"]?>
+                        </div>
+                      </div>
+                      <!-- 1 hang -->
+                      <div class="row px-2 mt-n3">
+                        <div class="col-4">
+                          <h6>Email : </h6>
+
+                        </div>
+                        <div class="col-8">
+                        <?php echo $_SESSION["email"]?>
+                        </div>
+                      </div>
+                      <!-- 1 hang -->
+                      <div class="row px-2 mt-n3">
+                        <div class="col-4">
+                          <h6>SĐT: </h6>
+                        </div>
+                        <div class="col-8">
+                        <?php echo $_SESSION["sdt"]?>
+                        </div>
+                      </div>
+                       <!-- 1 hang -->
+                       <div class="row px-2 mt-n3">
+                        <div class="col-4">
+                          <h6>Địa chỉ: </h6>
+                        </div>
+                        <div class="col-8">
+                        <?php echo $_SESSION["diachi"]?>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- thongtin nhanvien -->
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- Navbar End -->
-
-
-    <!-- Footer Start -->
-    <?php
-    include("footer.php")
-    ?>
 </body>
-
 </html>
